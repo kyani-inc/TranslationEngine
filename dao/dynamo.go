@@ -10,7 +10,7 @@ import (
 
 var svc *dynamodb.DynamoDB
 
-func Init() {
+func InitializeDB() {
 	// Initialize a session in us-west-2 that the SDK will use to load
 	// credentials from the shared credentials file ~/.aws/credentials.
 	sess, err := session.NewSession(&aws.Config{
@@ -39,6 +39,46 @@ func Put(item interface{}) error {
 
 	if err != nil {
 		fmt.Println("Got error calling PutItem:")
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func Update(item interface{}) error {
+	av, err := dynamodbattribute.MarshalMap(item)
+
+	// Create item in table Movies
+	input := &dynamodb.UpdateItemInput{
+		Key: av,
+		TableName: aws.String("TranslationsEngine"),
+	}
+
+	_, err = svc.UpdateItem(input)
+
+	if err != nil {
+		fmt.Println("Got error calling UpdateItem:")
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func Delete(item interface{}) error {
+	av, err := dynamodbattribute.MarshalMap(item)
+
+	// Create item in table Movies
+	input := &dynamodb.DeleteItemInput{
+		Key: av,
+		TableName: aws.String("TranslationsEngine"),
+	}
+
+	_, err = svc.DeleteItem(input)
+
+	if err != nil {
+		fmt.Println("Got error calling DeleteItem:")
 		fmt.Println(err.Error())
 		return err
 	}
