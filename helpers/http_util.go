@@ -2,9 +2,9 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/go-siris/siris/core/errors"
 	"net/url"
 	"strings"
+	"errors"
 )
 
 func GetLanguageFromPath(url *url.URL) (string, error) {
