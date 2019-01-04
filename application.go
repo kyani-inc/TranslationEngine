@@ -16,8 +16,6 @@ func main() {
 	translation_key.TK.List = []translation_key.TranslationKeys{}
 	translation_key.TK.UpdateFromDB()
 
-	fmt.Println(translation_key.TK)
-
 	fmt.Println("Listening on port 5000...")
 	err := http.ListenAndServe(":5000", nil)
 

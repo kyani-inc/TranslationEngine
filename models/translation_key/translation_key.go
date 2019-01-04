@@ -66,7 +66,6 @@ func (tkl *TranslationKeysList) UpdateFromDB() TranslationKeys {
 		}
 
 		if !isSame && sizes[0] > sizes[1] {
-			fmt.Println(i)
 			if current_tk.Language == "" {
 				tkl.AddTranslationKeys(val)
 			} else {
@@ -112,13 +111,17 @@ func (ky *TranslationKeys) DeleteKey(key string) {
 
 	delete(ky.KeyMap[keys[0]][keys[1]], keys[2])
 
-	if len(ky.KeyMap[keys[0]][keys[1]]) < 2 {
+	if len(ky.KeyMap[keys[0]][keys[1]]) < 1 {
 		delete(ky.KeyMap[keys[0]], keys[1])
 	}
 
-	if len(ky.KeyMap[keys[0]]) < 2 {
+	if len(ky.KeyMap[keys[0]]) < 1 {
 		delete(ky.KeyMap, keys[0])
 	}
+}
+
+func (ky *TranslationKeys) IsEmpty() bool {
+	return ky.Language == ""
 }
 
 func (ky *TranslationKeys) GetKey(key string) string {
