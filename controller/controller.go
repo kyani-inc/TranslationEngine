@@ -6,11 +6,15 @@ import (
 	"github.com/catmullet/TranslationEngine/helpers"
 	"github.com/catmullet/TranslationEngine/models/requests"
 	"github.com/catmullet/TranslationEngine/models/translation_key"
+	"github.com/catmullet/TranslationEngine/translate"
 	"io/ioutil"
 	"net/http"
 )
 
 func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
 	switch r.Method {
 	case http.MethodPost:
 		body, err := ioutil.ReadAll(r.Body)
@@ -28,10 +32,10 @@ func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tk := translation_key.Get(ati.Language)
+		tk := translation_key.Get(ati.Locale)
 
 		if tk.IsEmpty() {
-			tk.Language = ati.Language
+			tk.Locale = ati.Locale
 			tk.AddKey(ati.Key, ati.Translation)
 			err = translation_key.Put(tk)
 
@@ -59,21 +63,27 @@ func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Successfully Added Translation Key")
 }
 
-func GetTranslationsByLanguage(w http.ResponseWriter, r *http.Request) {
-	lang, err := helpers.GetLanguageFromPath(r.URL)
+func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	locale, err := helpers.GetLocaleFromPath(r.URL)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	tks := translation_key.Get(lang)
+	tks := translation_key.Get(locale)
 	json, _ := json.Marshal(tks.KeyMap)
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, "%s", string(json))
 }
 
-func DeleteTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
+func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
 	switch r.Method {
 	case http.MethodDelete:
 		dti := requests.DeleteTranslationInput{}
@@ -92,7 +102,7 @@ func DeleteTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tks := translation_key.Get(dti.Language)
+		tks := translation_key.Get(dti.Locale)
 		tks.DeleteKey(dti.Key)
 		err = translation_key.Put(tks)
 
@@ -109,4 +119,43 @@ func DeleteTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "Successfully Deleted Translation Key")
+}
+
+func TranslateKeyToLanguage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	switch r.Method {
+	case http.MethodPost:
+		ti := requests.TranslateInput{}
+
+		body, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		err = json.Unmarshal(body, &ti)
+
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		// Return
+		if ti.SourceLocale != "" && ti.TargetLocale != "" && (ti.Text != "" || ti.Key != "") {
+			translation := translate.ParseTranslateRequest(ti)
+			fmt.Fprintf(w, "%s", translation)
+			return
+		}
+
+		break
+	default:
+		w.WriteHeader(405)
+		fmt.Fprintf(w, "Method not allowed %s", r.Method)
+		return
+	}
+
+	fmt.Fprintf(w, "Missing required parameters")
 }

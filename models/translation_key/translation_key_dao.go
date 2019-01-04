@@ -31,38 +31,13 @@ func Put(item TranslationKeys) error {
 	return nil
 }
 
-func Update(item TranslationKeys) error {
-	tk := Get(item.Language)
-
-	if tk.Language == "" {
-		return Put(item)
-	}
-
-	av, err := dynamodbattribute.MarshalMap(tk)
-
-	// Create item in table Movies
-	input := &dynamodb.UpdateItemInput{
-		Key:       av,
-		TableName: aws.String("TranslationsEngine"),
-	}
-	_, err = database.SVC.UpdateItem(input)
-
-	if err != nil {
-		fmt.Println("Got error calling UpdateItem:")
-		fmt.Println(err.Error())
-		return err
-	}
-
-	return nil
-}
-
-func Get(lang string) TranslationKeys {
+func Get(locale string) TranslationKeys {
 	item := TranslationKeys{}
 
-	filter := expression.Name("language").Equal(expression.Value(lang))
-	proj := expression.NamesList(expression.Name("language"), expression.Name("keys"))
+	localefilter := expression.Name("locale").Equal(expression.Value(locale))
+	proj := expression.NamesList(expression.Name("locale"), expression.Name("keys"))
 
-	expr, err := expression.NewBuilder().WithFilter(filter).WithProjection(proj).Build()
+	expr, err := expression.NewBuilder().WithFilter(localefilter).WithProjection(proj).Build()
 
 	if err != nil {
 		fmt.Println("Got error building expression:")
@@ -104,7 +79,7 @@ func GetAll() TranslationKeysList {
 	list := TranslationKeysList{}
 	item := TranslationKeys{}
 
-	proj := expression.NamesList(expression.Name("language"), expression.Name("keys"))
+	proj := expression.NamesList(expression.Name("locale"), expression.Name("keys"))
 
 	expr, err := expression.NewBuilder().WithProjection(proj).Build()
 

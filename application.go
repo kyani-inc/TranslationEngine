@@ -5,12 +5,14 @@ import (
 	"github.com/catmullet/TranslationEngine/controller"
 	"github.com/catmullet/TranslationEngine/database"
 	"github.com/catmullet/TranslationEngine/models/translation_key"
+	"github.com/catmullet/TranslationEngine/translate"
 	"net/http"
 )
 
 func main() {
 	database.Init()
 	controller.Routes()
+	translate.InitializeAwsTranslate()
 
 	translation_key.TK = new(translation_key.TranslationKeysList)
 	translation_key.TK.List = []translation_key.TranslationKeys{}

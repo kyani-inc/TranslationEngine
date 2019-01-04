@@ -13,8 +13,8 @@ type TranslationKeysList struct {
 }
 
 type TranslationKeys struct {
-	Language string                                  `json:"language"`
-	KeyMap   map[string]map[string]map[string]string `json:"keys"`
+	Locale string                                  `json:"locale"`
+	KeyMap map[string]map[string]map[string]string `json:"keys"`
 }
 
 func (tkl *TranslationKeysList) AddTranslationKeys(tks TranslationKeys) *TranslationKeysList {
@@ -24,7 +24,7 @@ func (tkl *TranslationKeysList) AddTranslationKeys(tks TranslationKeys) *Transla
 
 func (tkl *TranslationKeysList) DeleteTranslationKeys(tks TranslationKeys) *TranslationKeysList {
 	for i, val := range tkl.List {
-		if val.Language == tks.Language {
+		if val.Locale == tks.Locale {
 			tkl.List[i] = tkl.List[len(tkl.List)-1]
 			tkl.List = tkl.List[:len(tkl.List)-1]
 		}
@@ -58,7 +58,7 @@ func (tkl *TranslationKeysList) UpdateFromDB() TranslationKeys {
 	tkl_db := GetAll()
 
 	for _, val := range tkl_db.List {
-		i, current_tk := tkl.GetByLanguage(val.Language)
+		i, current_tk := tkl.GetByLocale(val.Locale)
 		isSame, sizes, err := helpers.Compare(val, current_tk)
 
 		if err != nil {
@@ -66,7 +66,7 @@ func (tkl *TranslationKeysList) UpdateFromDB() TranslationKeys {
 		}
 
 		if !isSame && sizes[0] > sizes[1] {
-			if current_tk.Language == "" {
+			if current_tk.Locale == "" {
 				tkl.AddTranslationKeys(val)
 			} else {
 				tkl.List[i].KeyMap = val.KeyMap
@@ -76,9 +76,9 @@ func (tkl *TranslationKeysList) UpdateFromDB() TranslationKeys {
 	return TranslationKeys{}
 }
 
-func (tkl *TranslationKeysList) GetByLanguage(lang string) (int, TranslationKeys) {
+func (tkl *TranslationKeysList) GetByLocale(lang string) (int, TranslationKeys) {
 	for i, val := range tkl.List {
-		if val.Language == lang {
+		if val.Locale == lang {
 			return i, val
 		}
 	}
@@ -121,7 +121,7 @@ func (ky *TranslationKeys) DeleteKey(key string) {
 }
 
 func (ky *TranslationKeys) IsEmpty() bool {
-	return ky.Language == ""
+	return ky.Locale == ""
 }
 
 func (ky *TranslationKeys) GetKey(key string) string {
