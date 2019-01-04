@@ -12,13 +12,14 @@ func AddTranslation(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetTranslations(w http.ResponseWriter, r *http.Request) {
+func GetTranslationsByLanguage(w http.ResponseWriter, r *http.Request) {
 	lang, err := helpers.GetLanguageFromPath(r.URL)
 
 	fmt.Println(lang)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		return
 	}
 
 	tks := translation_key.Get(lang)
