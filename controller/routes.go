@@ -10,4 +10,6 @@ func Routes() {
 	http.HandleFunc("/delete", DeleteTranslationByLocale)
 
 	http.HandleFunc("/translate", TranslateKeyToLanguage)
+
+	http.HandleFunc("/list_countries", ListCountries)
 }

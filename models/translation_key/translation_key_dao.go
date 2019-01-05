@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 	"github.com/catmullet/TranslationEngine/database"
+	"github.com/catmullet/TranslationEngine/helpers"
 	"os"
 )
 
@@ -116,6 +117,52 @@ func GetAll() TranslationKeysList {
 	}
 
 	return list
+}
+
+func GetAllCountriesAndLanguages() map[string][]string {
+	item := TranslationKeys{}
+
+	proj := expression.NamesList(expression.Name("locale"))
+
+	expr, err := expression.NewBuilder().WithProjection(proj).Build()
+
+	if err != nil {
+		fmt.Println("Got error building expression:")
+		fmt.Println(err.Error())
+	}
+
+	params := &dynamodb.ScanInput{
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		FilterExpression:          expr.Filter(),
+		ProjectionExpression:      expr.Projection(),
+		TableName:                 aws.String("TranslationsEngine"),
+	}
+
+	result, err := database.SVC.Scan(params)
+
+	if err != nil {
+		fmt.Println("Query API call failed:")
+		fmt.Println((err.Error()))
+	}
+
+	countriesAndLang := make(map[string][]string)
+
+	for _, i := range result.Items {
+		err = dynamodbattribute.UnmarshalMap(i, &item)
+
+		if err != nil {
+			fmt.Println("Got error unmarshalling:")
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+
+		country, lang, _ := helpers.ConvertLocaleToCountryAndLanguage(item.Locale)
+
+		countriesAndLang[country] = append(countriesAndLang[country], lang)
+	}
+
+	return countriesAndLang
 }
 
 func Delete(item interface{}) error {

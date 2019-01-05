@@ -159,3 +159,12 @@ func TranslateKeyToLanguage(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Missing required parameters")
 }
+
+func ListCountries(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	body, _ := json.Marshal(translation_key.GetAllCountriesAndLanguages())
+
+	fmt.Fprintf(w, "%s", string(body))
+}
