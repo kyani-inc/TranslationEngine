@@ -12,7 +12,12 @@ import (
 )
 
 func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	setupResponse(&w, r)
+
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 
 	switch r.Method {
@@ -64,7 +69,12 @@ func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	setupResponse(&w, r)
+
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 
 	locale, err := helpers.GetLocaleFromPath(r.URL)
@@ -81,40 +91,36 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	setupResponse(&w, r)
+
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 
-	switch r.Method {
-	case http.MethodDelete:
-		dti := requests.DeleteTranslationInput{}
+	dti := requests.DeleteTranslationInput{}
 
-		body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(r.Body)
 
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
-		err = json.Unmarshal(body, &dti)
+	err = json.Unmarshal(body, &dti)
 
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 
-		tks := translation_key.Get(dti.Locale)
-		tks.DeleteKey(dti.Key)
-		err = translation_key.Put(tks)
+	tks := translation_key.Get(dti.Locale)
+	tks.DeleteKey(dti.Key)
+	err = translation_key.Put(tks)
 
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-
-		break
-	default:
-		w.WriteHeader(405)
-		fmt.Fprintf(w, "Method not allowed %s", r.Method)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
 		return
 	}
 
@@ -122,7 +128,12 @@ func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
 }
 
 func TranslateKeyToLanguage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	setupResponse(&w, r)
+
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 
 	switch r.Method {
@@ -167,4 +178,10 @@ func ListCountries(w http.ResponseWriter, r *http.Request) {
 	body, _ := json.Marshal(translation_key.GetAllCountriesAndLanguages())
 
 	fmt.Fprintf(w, "%s", string(body))
+}
+
+func setupResponse(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
