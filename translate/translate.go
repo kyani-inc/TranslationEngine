@@ -60,7 +60,12 @@ func ParseTranslateRequest(ti requests.TranslateInput) string {
 			tk.Locale = ti.TargetLocale
 		}
 
-		tk.AddKey(ti.Key, translatedText)
+		if ti.Text != "" {
+			tk.AddKey(ti.Key, ti.Text)
+		} else {
+			tk.AddKey(ti.Key, translatedText)
+		}
+
 		err := translation_key.Put(tk)
 
 		// TODO: Return error back to controller here
