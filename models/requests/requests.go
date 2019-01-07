@@ -18,3 +18,8 @@ type TranslateInput struct {
 	Text         string `json:"text"`
 	CreateKey    bool   `json:"create_key"`
 }
+
+type SyncInput struct {
+	SourceLocale string `json:"source_locale"`
+	TargetLocale string `json:"target_locale"`
+}
