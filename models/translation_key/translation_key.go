@@ -3,7 +3,6 @@ package translation_key
 import (
 	"fmt"
 	"github.com/catmullet/TranslationEngine/helpers"
-	"github.com/catmullet/TranslationEngine/translate"
 	"strings"
 )
 
@@ -130,19 +129,6 @@ func (ky *TranslationKeys) GetKey(key string) string {
 	keys := parseDotSeperatedKeys(key)
 
 	return ky.KeyMap[keys[0]][keys[1]][keys[2]]
-}
-
-func (ky *TranslationKeys) SyncFrom(from_ky TranslationKeys) {
-	for key1, _ := range from_ky.KeyMap {
-		for key2, _ := range from_ky.KeyMap[key1] {
-			for key3, text := range from_ky.KeyMap[key1][key2] {
-				if _, ok := ky.KeyMap[key1][key2][key3]; !ok {
-					transText := translate.TranslateText(text, from_ky.Locale, ky.Locale)
-					ky.AddKey(fmt.Sprintf("%s.%s.%s", key1, key2, key3), transText)
-				}
-			}
-		}
-	}
 }
 
 func parseDotSeperatedKeys(key string) []string {

@@ -37,6 +37,20 @@ func TranslateText(text, sourceLang, targetLang string) string {
 	return *to.TranslatedText
 }
 
+func SyncFrom(ky, from_ky translation_key.TranslationKeys) {
+	for key1, _ := range from_ky.KeyMap {
+		for key2, _ := range from_ky.KeyMap[key1] {
+			for key3, text := range from_ky.KeyMap[key1][key2] {
+				if _, ok := ky.KeyMap[key1][key2][key3]; !ok {
+					transText := TranslateText(text, from_ky.Locale, ky.Locale)
+					ky.AddKey(fmt.Sprintf("%s.%s.%s", key1, key2, key3), transText)
+				}
+			}
+		}
+	}
+	translation_key.Put(ky)
+}
+
 func ParseTranslateRequest(ti requests.TranslateInput) string {
 
 	// If they want to get the text from a key and source

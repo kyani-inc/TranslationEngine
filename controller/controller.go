@@ -120,7 +120,7 @@ func SyncTranslationsFromLocale(w http.ResponseWriter, r *http.Request) {
 	target := translation_key.Get(si.TargetLocale)
 	source := translation_key.Get(si.SourceLocale)
 
-	target.SyncFrom(source)
+	translate.SyncFrom(target, source)
 
 	fmt.Fprintf(w, "%s", "Success")
 }
