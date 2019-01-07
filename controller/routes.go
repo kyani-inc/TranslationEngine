@@ -7,6 +7,7 @@ import (
 func Routes() {
 	http.HandleFunc("/", GetTranslationsByLocale)
 	http.HandleFunc("/add", AddTranslationByLanguage)
+	http.HandleFunc("/sync", SyncTranslationsFromLocale)
 	http.HandleFunc("/delete", DeleteTranslationByLocale)
 
 	http.HandleFunc("/translate", TranslateKeyToLanguage)
