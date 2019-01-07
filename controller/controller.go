@@ -15,6 +15,7 @@ func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -73,6 +74,7 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -95,6 +97,7 @@ func SyncTranslationsFromLocale(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -129,6 +132,7 @@ func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -167,6 +171,7 @@ func TranslateKeyToLanguage(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
