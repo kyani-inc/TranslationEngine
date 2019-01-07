@@ -42,7 +42,9 @@ func SyncFrom(ky, from_ky translation_key.TranslationKeys) {
 		for key2, _ := range from_ky.KeyMap[key1] {
 			for key3, text := range from_ky.KeyMap[key1][key2] {
 				if _, ok := ky.KeyMap[key1][key2][key3]; !ok {
-					transText := TranslateText(text, from_ky.Locale, ky.Locale)
+					_, fromLang, _ := helpers.ConvertLocaleToCountryAndLanguage(from_ky.Locale)
+					_, Lang, _ := helpers.ConvertLocaleToCountryAndLanguage(ky.Locale)
+					transText := TranslateText(text, fromLang, Lang)
 					ky.AddKey(fmt.Sprintf("%s.%s.%s", key1, key2, key3), transText)
 				}
 			}
