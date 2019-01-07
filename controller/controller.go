@@ -122,7 +122,7 @@ func SyncTranslationsFromLocale(w http.ResponseWriter, r *http.Request) {
 
 	translate.SyncFrom(target, source)
 
-	fmt.Fprintf(w, "%s", "Success")
+	fmt.Fprintf(w, "Successfully synced translations")
 }
 
 func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
