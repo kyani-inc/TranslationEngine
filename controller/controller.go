@@ -15,6 +15,7 @@ func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -22,6 +23,7 @@ func AddTranslationByLanguage(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodPost:
+		defer r.Body.Close()
 		body, err := ioutil.ReadAll(r.Body)
 		ati := requests.AddTranslationInput{}
 
@@ -72,6 +74,7 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -97,10 +100,46 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", string(json))
 }
 
+func SyncTranslationsFromLocale(w http.ResponseWriter, r *http.Request) {
+	setupResponse(&w, r)
+
+	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	si := requests.SyncInput{}
+
+	err = json.Unmarshal(body, &si)
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	target := translation_key.Get(si.TargetLocale)
+	source := translation_key.Get(si.SourceLocale)
+
+	translate.SyncFrom(target, source)
+
+	fmt.Fprintf(w, "Successfully synced translations")
+}
+
 func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -108,6 +147,7 @@ func DeleteTranslationByLocale(w http.ResponseWriter, r *http.Request) {
 
 	dti := requests.DeleteTranslationInput{}
 
+	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
@@ -138,6 +178,7 @@ func TranslateKeyToLanguage(w http.ResponseWriter, r *http.Request) {
 	setupResponse(&w, r)
 
 	if (*r).Method == "OPTIONS" {
+		fmt.Fprintf(w, "Success")
 		return
 	}
 
@@ -147,6 +188,7 @@ func TranslateKeyToLanguage(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		ti := requests.TranslateInput{}
 
+		defer r.Body.Close()
 		body, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
