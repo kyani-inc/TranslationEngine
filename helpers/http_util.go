@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"net/http"
 )
 
 func GetLanguageAndCountryFromPath(url *url.URL) (string, string, error) {
@@ -24,6 +25,27 @@ func GetLanguageAndCountryFromPath(url *url.URL) (string, string, error) {
 
 	return "", "", errors.New("Failed To Get Language")
 }
+
+func GetTranslationSettingsFromHeader(r *http.Request) string  {
+
+	acceptLanguage := r.Header.Get("Accept-Language")
+
+	acceptLanguage = strings.Split(acceptLanguage, ",")[0]
+
+	locale := strings.Split(acceptLanguage, "-")
+	reversedlocale := reverse(locale)
+
+	return strings.Join(reversedlocale, "-")
+}
+
+func reverse(val []string) []string {
+	for i := 0; i < len(val)/2; i++ {
+		j := len(val) - i - 1
+		val[i], val[j] = val[j], val[i]
+	}
+	return val
+}
+
 
 func GetLocaleFromPath(url *url.URL) (string, bool, error) {
 	isJS := false
