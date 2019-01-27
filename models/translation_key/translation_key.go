@@ -93,12 +93,14 @@ func (ky *TranslationKeys) AddKey(key, keyValue string) {
 		ky.KeyMap = make(map[string]map[string]map[string]string)
 	}
 	if _, ok := ky.KeyMap[keys[0]]; !ok {
-
 		ky.KeyMap[keys[0]] = make(map[string]map[string]string)
 		ky.KeyMap[keys[0]][keys[1]] = make(map[string]string)
 	}
 	if _, ok := ky.KeyMap[keys[0]][keys[1]]; !ok {
 		ky.KeyMap[keys[0]][keys[1]] = make(map[string]string)
+	}
+	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]]; !ok {
+		ky.KeyMap[keys[0]][keys[1]][keys[2]] = keyValue
 	}
 	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]]; !ok {
 		ky.KeyMap[keys[0]][keys[1]][keys[2]] = keyValue

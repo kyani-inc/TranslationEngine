@@ -14,6 +14,11 @@ var (
 	Trans *translate.Translate
 )
 
+const (
+	TRANSLATION_WORKER = `window.onload=function(){let regex=/(?:\$\{)(.*)(?:\})/g;var content=document.body.innerHTML;document.body.innerHTML="";var matches=[];var match;while(match=regex.exec(content)){matches.push(match[1])}
+if(matches){matches.forEach(val=>{let value=val.split(".");if(translations){let translation=translations[value[0]];if(translation){translation=translation[value[1]];if(translation){translation=translation[value[2]];content=content.replace("${"+val+"}",translation)}}}});document.body.innerHTML=content}}`
+)
+
 func InitializeAwsTranslate() {
 	sess := session.Must(session.NewSession())
 	sess.Config.Region = aws.String("us-east-1")

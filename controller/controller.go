@@ -77,7 +77,7 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	locale, err := helpers.GetLocaleFromPath(r.URL)
+	locale, isJS,  err := helpers.GetLocaleFromPath(r.URL)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -86,6 +86,13 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 
 	tks := translation_key.Get(locale)
 	json, _ := json.Marshal(tks.KeyMap)
+
+	if isJS {
+		w.Header().Set("Content-Type", "text/javascript")
+		fmt.Fprint(w, fmt.Sprintf("let translations = %s;", string(json)),translate.TRANSLATION_WORKER)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, "%s", string(json))
 }
