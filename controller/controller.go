@@ -3,10 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/catmullet/TranslationEngine/helpers"
-	"github.com/catmullet/TranslationEngine/models/requests"
-	"github.com/catmullet/TranslationEngine/models/translation_key"
-	"github.com/catmullet/TranslationEngine/translate"
+	"github.com/kyani-inc/TranslationEngine/helpers"
+	"github.com/kyani-inc/TranslationEngine/models/requests"
+	"github.com/kyani-inc/TranslationEngine/models/translation_key"
+	"github.com/kyani-inc/TranslationEngine/translate"
 	"io/ioutil"
 	"net/http"
 )
@@ -80,7 +80,7 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	locale, isJS,  err := helpers.GetLocaleFromPath(r.URL)
+	locale, isJS, err := helpers.GetLocaleFromPath(r.URL)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -92,7 +92,7 @@ func GetTranslationsByLocale(w http.ResponseWriter, r *http.Request) {
 
 	if isJS {
 		w.Header().Set("Content-Type", "text/javascript")
-		fmt.Fprint(w, fmt.Sprintf("let translations = %s;", string(json)),translate.TRANSLATION_WORKER)
+		fmt.Fprint(w, fmt.Sprintf("let translations = %s;", string(json)), translate.TRANSLATION_WORKER)
 		return
 	}
 

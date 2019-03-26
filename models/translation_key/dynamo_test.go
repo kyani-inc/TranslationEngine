@@ -1,7 +1,7 @@
 package translation_key
 
 import (
-	"github.com/catmullet/TranslationEngine/database"
+	"github.com/kyani-inc/TranslationEngine/database"
 	"testing"
 )
 

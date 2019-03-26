@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/catmullet/TranslationEngine/models"
+	"github.com/kyani-inc/TranslationEngine/models"
 	"testing"
 )
 

@@ -2,7 +2,7 @@ package translation_key
 
 import (
 	"fmt"
-	"github.com/catmullet/TranslationEngine/helpers"
+	"github.com/kyani-inc/TranslationEngine/helpers"
 	"strings"
 )
 

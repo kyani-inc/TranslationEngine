@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/catmullet/TranslationEngine/controller"
-	"github.com/catmullet/TranslationEngine/database"
-	"github.com/catmullet/TranslationEngine/models/translation_key"
-	"github.com/catmullet/TranslationEngine/translate"
+	"github.com/kyani-inc/TranslationEngine/controller"
+	"github.com/kyani-inc/TranslationEngine/database"
+	"github.com/kyani-inc/TranslationEngine/models/translation_key"
+	"github.com/kyani-inc/TranslationEngine/translate"
 	"net/http"
 )
 
