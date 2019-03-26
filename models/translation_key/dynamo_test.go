@@ -15,7 +15,7 @@ func TestPut(t *testing.T) {
 	Init()
 
 	tk := TranslationKeys{}
-	tk.Language = "en"
+	tk.Locale = "en"
 	tk.AddKey("ui.support.error", "An error occurred")
 	tk.AddKey("ui.support.info", "Info has occured")
 	tk.AddKey("common.button.submit", "Submit")
