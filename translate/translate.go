@@ -45,22 +45,12 @@ func TranslateText(text, sourceLang, targetLang string) string {
 func SyncFrom(ky, from_ky translation_key.TranslationKeys) {
 	for key1, _ := range from_ky.KeyMap {
 		for key2, _ := range from_ky.KeyMap[key1] {
-			for key3, _ := range from_ky.KeyMap[key1][key2] {
-				for key4, _ := range from_ky.KeyMap[key1][key2][key3] {
-					for key5, _ := range from_ky.KeyMap[key1][key2][key3][key4] {
-						for key6, _ := range from_ky.KeyMap[key1][key2][key3][key4][key5] {
-							for key7, _ := range from_ky.KeyMap[key1][key2][key3][key4][key5][key6] {
-								for key8, text := range from_ky.KeyMap[key1][key2][key3][key4][key5][key6][key7] {
-									if _, ok := ky.KeyMap[key1][key2][key3][key4][key5][key6][key7][key8]; !ok {
-										_, fromLang, _ := helpers.ConvertLocaleToCountryAndLanguage(from_ky.Locale)
-										_, Lang, _ := helpers.ConvertLocaleToCountryAndLanguage(ky.Locale)
-										transText := TranslateText(text, fromLang, Lang)
-										ky.AddKey(fmt.Sprintf("%s.%s.%s", key1, key2, key3), transText)
-									}
-								}
-							}
-						}
-					}
+			for key3, text := range from_ky.KeyMap[key1][key2] {
+				if _, ok := ky.KeyMap[key1][key2][key3]; !ok {
+					_, fromLang, _ := helpers.ConvertLocaleToCountryAndLanguage(from_ky.Locale)
+					_, Lang, _ := helpers.ConvertLocaleToCountryAndLanguage(ky.Locale)
+					transText := TranslateText(text, fromLang, Lang)
+					ky.AddKey(fmt.Sprintf("%s.%s.%s", key1, key2, key3), transText)
 				}
 			}
 		}
