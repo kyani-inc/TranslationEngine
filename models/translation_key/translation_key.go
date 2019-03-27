@@ -117,6 +117,9 @@ func (ky *TranslationKeys) AddKey(key, keyValue string) {
 	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]][keys[7]]; !ok {
 		ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]][keys[7]] = keyValue
 	}
+	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]]; !ok {
+		ky.KeyMap[keys[0]][keys[1]][keys[2]] = keyValue
+	}
 }
 
 func (ky *TranslationKeys) DeleteKey(key string) {
