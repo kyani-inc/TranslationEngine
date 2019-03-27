@@ -13,8 +13,8 @@ type TranslationKeysList struct {
 }
 
 type TranslationKeys struct {
-	Locale string                                                                                         `json:"locale"`
-	KeyMap map[string]map[string]map[string]map[string]map[string]map[string]map[string]map[string]string `json:"keys"`
+	Locale string                                  `json:"locale"`
+	KeyMap map[string]map[string]map[string]string `json:"keys"`
 }
 
 func (tkl *TranslationKeysList) AddTranslationKeys(tks TranslationKeys) *TranslationKeysList {
@@ -90,32 +90,17 @@ func (ky *TranslationKeys) AddKey(key, keyValue string) {
 	keys := parseDotSeperatedKeys(key)
 
 	if ky.KeyMap == nil {
-		ky.KeyMap = make(map[string]map[string]map[string]map[string]map[string]map[string]map[string]map[string]string)
+		ky.KeyMap = make(map[string]map[string]map[string]string)
 	}
 	if _, ok := ky.KeyMap[keys[0]]; !ok {
-		ky.KeyMap[keys[0]] = make(map[string]map[string]map[string]map[string]map[string]map[string]map[string]string)
-		ky.KeyMap[keys[0]][keys[1]] = make(map[string]map[string]map[string]map[string]map[string]map[string]string)
+		ky.KeyMap[keys[0]] = make(map[string]map[string]string)
+		ky.KeyMap[keys[0]][keys[1]] = make(map[string]string)
 	}
 	if _, ok := ky.KeyMap[keys[0]][keys[1]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]] = make(map[string]map[string]map[string]map[string]map[string]map[string]string)
+		ky.KeyMap[keys[0]][keys[1]] = make(map[string]string)
 	}
 	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]][keys[2]] = make(map[string]map[string]map[string]map[string]map[string]string)
-	}
-	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]] = make(map[string]map[string]map[string]map[string]string)
-	}
-	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]] = make(map[string]map[string]map[string]string)
-	}
-	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]] = make(map[string]map[string]string)
-	}
-	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]] = make(map[string]string)
-	}
-	if _, ok := ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]][keys[7]]; !ok {
-		ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]][keys[7]] = keyValue
+		ky.KeyMap[keys[0]][keys[1]][keys[2]] = keyValue
 	}
 }
 
@@ -142,7 +127,7 @@ func (ky *TranslationKeys) GetKey(key string) string {
 
 	keys := parseDotSeperatedKeys(key)
 
-	return ky.KeyMap[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]][keys[6]][keys[7]]
+	return ky.KeyMap[keys[0]][keys[1]][keys[2]]
 }
 
 func parseDotSeperatedKeys(key string) []string {
